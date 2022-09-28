@@ -59,20 +59,29 @@ resource "kubernetes_deployment" "proxy" {
         container {
           image = "Dan6erbond/openproject-discord-webhook-proxy"
           name  = "openproject-discord-webhook-proxy"
-          env_from {
-            config_map_ref {
-              name = kubernetes_config_map.config.metadata.0.name
-            }
-          }
           port {
             container_port = var.container_port
             name           = "http"
+          }
+          volume_mount {
+            name       = "config"
+            mount_path = "/app"
           }
           dynamic "volume_mount" {
             for_each = kubernetes_persistent_volume_claim.requests
             content {
               mount_path = "/app/requests"
               name       = "requests"
+            }
+          }
+        }
+        volume {
+          name = "config"
+          config_map {
+            name = kubernetes_config_map.config.metadata.0.name
+            items {
+              key  = "data"
+              path = "config.yaml"
             }
           }
         }
