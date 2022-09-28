@@ -43,6 +43,7 @@ variable "enable_ingress" {
 variable "ingress_class" {
   description = "Class to use for the ingress"
   type        = string
+  default     = ""
 }
 
 variable "ingress_annotations" {
@@ -54,6 +55,7 @@ variable "ingress_annotations" {
 variable "ingress_host" {
   description = "Hostname to use for the ingress"
   type        = string
+  default     = ""
 }
 
 variable "ingress_path" {
@@ -64,8 +66,11 @@ variable "ingress_path" {
 
 variable "tls_configuration" {
   description = "TLS configuration to add to the ingress"
-  type        = list(map(any))
-  default     = []
+  type = list(object({
+    secret_name = string
+    hosts       = list(string)
+  }))
+  default = []
 }
 
 variable "s3_bucket_name" {
@@ -106,7 +111,13 @@ variable "s3_use_ssl" {
 
 variable "webhooks" {
   description = "Webhooks configuration for the proxy"
-  type        = list(map(string))
+  type = list(object({
+    name    = string
+    path    = optional(string)
+    url     = string
+    secret  = optional(string)
+    actions = optional(list(string))
+  }))
 }
 
 variable "openproject_base_url" {
