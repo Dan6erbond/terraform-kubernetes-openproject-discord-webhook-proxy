@@ -59,13 +59,13 @@ variable "ingress_host" {
 variable "ingress_path" {
   description = "Path to append to the ingress"
   type        = string
-  default     = ""
+  default     = "/"
 }
 
 variable "tls_configuration" {
   description = "TLS configuration to add to the ingress"
-  type        = map(any)
-  default     = {}
+  type        = list(map(any))
+  default     = []
 }
 
 variable "s3_bucket_name" {
