@@ -184,7 +184,7 @@ resource "kubernetes_config_map" "config" {
         host = "0.0.0.0"
         port = var.container_port
       }
-      storage = {
+      storage = var.s3_bucket_name != "" ? {
         s3 = {
           bucketName = var.s3_bucket_name
           region     = var.s3_region
@@ -193,13 +193,14 @@ resource "kubernetes_config_map" "config" {
           secretKey  = var.s3_secret_key
           useSSL     = var.s3_use_ssl
         }
+        } : {
         local = {
           path = var.enable_local_storage ? "./requests" : ""
         }
-        webhooks = var.webhooks
-        openproject = {
-          baseUrl = var.openproject_base_url
-        }
+      }
+      webhooks = var.webhooks
+      openproject = {
+        baseUrl = var.openproject_base_url
       }
     })
   }
