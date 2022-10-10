@@ -64,6 +64,10 @@ resource "kubernetes_deployment" "proxy" {
             name       = "config"
             mount_path = "/tmp"
           }
+          volume_mount {
+            name       = "app"
+            mount_path = "/app"
+          }
         }
         container {
           image = "dan6erbond/openproject-discord-webhook-proxy"
@@ -72,6 +76,11 @@ resource "kubernetes_deployment" "proxy" {
             container_port = var.container_port
             name           = "http"
           }
+          volume_mount {
+            name       = "app"
+            mount_path = "/app/config.yaml"
+            sub_path   = "config.yaml"
+          }
           dynamic "volume_mount" {
             for_each = kubernetes_persistent_volume_claim.requests
             content {
@@ -79,6 +88,10 @@ resource "kubernetes_deployment" "proxy" {
               name       = "requests"
             }
           }
+        }
+        volume {
+          name = "app"
+          empty_dir {}
         }
         volume {
           name = "config"
