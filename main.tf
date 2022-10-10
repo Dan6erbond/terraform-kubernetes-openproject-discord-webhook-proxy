@@ -56,16 +56,21 @@ resource "kubernetes_deployment" "proxy" {
         }
       }
       spec {
+        init_container {
+          name    = "copy-config"
+          image   = "busybox"
+          command = ["sh", "-c", "cp /tmp/config.yaml /app/config.yaml"]
+          volume_mount {
+            name       = "config"
+            mount_path = "/tmp"
+          }
+        }
         container {
           image = "dan6erbond/openproject-discord-webhook-proxy"
           name  = "openproject-discord-webhook-proxy"
           port {
             container_port = var.container_port
             name           = "http"
-          }
-          volume_mount {
-            name       = "config"
-            mount_path = "/app"
           }
           dynamic "volume_mount" {
             for_each = kubernetes_persistent_volume_claim.requests
