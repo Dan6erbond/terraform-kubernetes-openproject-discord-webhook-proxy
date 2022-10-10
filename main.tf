@@ -80,7 +80,7 @@ resource "kubernetes_deployment" "proxy" {
           config_map {
             name = kubernetes_config_map.config.metadata.0.name
             items {
-              key  = "data"
+              key  = "config"
               path = "config.yaml"
             }
           }
