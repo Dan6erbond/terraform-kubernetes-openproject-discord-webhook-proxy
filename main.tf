@@ -57,7 +57,7 @@ resource "kubernetes_deployment" "proxy" {
       }
       spec {
         container {
-          image = "Dan6erbond/openproject-discord-webhook-proxy"
+          image = "dan6erbond/openproject-discord-webhook-proxy"
           name  = "openproject-discord-webhook-proxy"
           port {
             container_port = var.container_port
